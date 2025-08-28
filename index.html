@@ -506,24 +506,41 @@
         // Cargar casos desde Google Sheets
         async function loadCasesFromGoogleSheets() {
             try {
-                const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
+                // URL directa de CSV publicado
+                const url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vSyour-published-id-here/pub?output=csv`;
                 
                 const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const csvText = await response.text();
+                console.log('CSV recibido:', csvText.substring(0, 200));
                 
                 allCases = parseCSV(csvText);
                 
                 console.log('Casos cargados:', allCases.length);
                 
-                document.getElementById('loadingIndicator').style.display = 'none';
-                document.getElementById('casesGrid').style.display = 'grid';
-                
-                renderCases(allCases);
+                if (allCases.length > 0) {
+                    document.getElementById('loadingIndicator').style.display = 'none';
+                    document.getElementById('casesGrid').style.display = 'grid';
+                    renderCases(allCases);
+                } else {
+                    throw new Error('No se encontraron casos en el CSV');
+                }
                 
             } catch (error) {
                 console.error('Error cargando casos:', error);
                 document.getElementById('loadingIndicator').innerHTML = `
-                    <p style="color: #ff6b6b;">Error cargando casos. Verifica la configuración de Google Sheets.</p>
+                    <div style="color: rgba(255,255,255,0.9); text-align: center;">
+                        <p style="margin-bottom: 16px;">Error: ${error.message}</p>
+                        <p style="font-size: 14px; opacity: 0.8;">Asegúrate de publicar la hoja como CSV público</p>
+                        <button onclick="loadCasesFromGoogleSheets()" style="
+                            background: #A855F7; color: white; border: none; padding: 8px 16px;
+                            border-radius: 8px; margin-top: 12px; cursor: pointer;
+                        ">🔄 Reintentar</button>
+                    </div>
                 `;
             }
         }
