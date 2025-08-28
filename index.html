@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+// URL de CSV - cámbiala por la que te dé Google Sheets
+                const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRQ1P1SF3lNhOmW3tk41FQD7W1fivD_y6mfzXF4w8zssSO9pExh<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -488,16 +489,13 @@
 
         <div class="not-found-section">
             <h3 class="not-found-title">¿No encuentras la solución?</h3>
-            <p>Si el problema del usuario no está en esta lista, créalo como caso nuevo</p>
-            <button class="report-btn" onclick="window.open('https://retorna.slack.com/archives/CS8UE5R36', '_blank')">
-                📋 Reportar Nuevo Caso en Slack
-            </button>
+            <p>Si el problema del usuario no está en esta lista, créalo como caso nuevo en el canal de Slack correspondiente</p>
         </div>
     </div>
 
     <script>
         // CONFIGURACIÓN - CAMBIAR ESTE ID POR EL DE TU GOOGLE SHEET
-        const GOOGLE_SHEET_ID = 'dashboard-cs-retorna';
+        const GOOGLE_SHEET_ID = '1kIQB_euDjmFBDgElADLnxO0oP3DvbuQxTtuULxw8nKg';
         const SHEET_NAME = 'Hoja1'; // Nombre de la pestaña (sin espacio)
         
         let allCases = [];
@@ -506,8 +504,8 @@
         // Cargar casos desde Google Sheets
         async function loadCasesFromGoogleSheets() {
             try {
-                // URL directa de CSV publicado
-                const url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vRQ1PtSF3INhOmW3tk41FQD7W1fivD_y6mfzXF4w8zssSO9pExhAv7SeAplg8rgMDVDrXakxd5Fn3ZA/pubhtml`;
+                // Reemplaza esta URL con la que obtengas de "Publish to web"
+                const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRQ1PtSF3INhOmW3tk41FQD7W1fivD_y6mfzXF4w8zssSO9pExhAv7SeAplg8rgMDVDrXakxd5Fn3ZA/pub?output=csv';
                 
                 const response = await fetch(url);
                 
@@ -728,5 +726,3 @@ INSTRUCCIONES DE IMPLEMENTACIÓN:
    - Wallet Dólares
 
 -->
-
-
