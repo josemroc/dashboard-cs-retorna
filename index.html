@@ -118,23 +118,24 @@
         }
 
         .filter-chip {
-            background: rgba(255, 255, 255, 0.15);
-            border: 2px solid rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #A855F7;
             border-radius: 25px;
             padding: 8px 16px;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            color: white;
+            color: #A855F7;
             backdrop-filter: blur(10px);
         }
 
         .filter-chip:hover {
-            border-color: rgba(255, 255, 255, 0.5);
+            border-color: #9333EA;
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
-            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+            background: rgba(255, 255, 255, 1);
+            color: #9333EA;
         }
 
         .filter-chip.active {
@@ -497,7 +498,7 @@
     <script>
         // CONFIGURACIÓN - CAMBIAR ESTE ID POR EL DE TU GOOGLE SHEET
         const GOOGLE_SHEET_ID = '1kIQB_euDjmFBDgElADLnxO0oP3DvbuQxTtuULxw8nKg';
-        const SHEET_NAME = 'Hoja 1'; // Nombre de la pestaña
+        const SHEET_NAME = 'Hoja1'; // Nombre de la pestaña (sin espacio)
         
         let allCases = [];
         let filteredCases = [];
