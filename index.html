@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitácora CS - Retorna</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #4C1D95 0%, #5B21B6 50%, #7C3AED 100%);
+            min-height: 100vh;
+            color: #1F2937;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+        }
+
+        .logo-text h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .logo-text p {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .search-section {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid #E2E8F0;
+        }
+
+        .search-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .search-subtitle {
+            color: #718096;
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 16px;
+        }
+
+        .search-input {
+            width: 100%;
+            border: 3px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 20px 24px;
+            font-size: 18px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #FAFBFD;
+            color: #2D3748;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #8B5CF6;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+        }
+
+        .search-input::placeholder {
+            color: #a0aec0;
+        }
+
+        .quick-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .filter-chip {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 25px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-chip:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .filter-chip.active {
+            background: linear-gradient(135deg, #A855F7, #C084FC);
+            border-color: #A855F7;
+            color: white;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+        }
+
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .case-card {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #E2E8F0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .case-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #A855F7, #C084FC);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .case-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 45px rgba(168, 85, 247, 0.25), 0 6px 20px rgba(0, 0, 0, 0.15);
+            border-color: #A855F7;
+        }
+
+        .case-card:hover::before {
+            opacity: 1;
+        }
+
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .case-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a202c;
+            line-height: 1.3;
+            flex: 1;
+            margin-right: 12px;
+        }
+
+        .priority-badge {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .priority-high {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .priority-medium {
+            background: #feebc8;
+            color: #c05621;
+        }
+
+        .priority-low {
+            background: #c6f6d5;
+            color: #276749;
+        }
+
+        .case-stage {
+            display: inline-block;
+            background: #edf2f7;
+            color: #4a5568;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .user-symptom {
+            background: #f0f4f8;
+            border-left: 4px solid #A855F7;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+            font-style: italic;
+            color: #2d3748;
+            position: relative;
+        }
+
+        .user-symptom::before {
+            content: '"';
+            font-size: 24px;
+            color: #A855F7;
+            position: absolute;
+            left: 12px;
+            top: 8px;
+            font-weight: bold;
+        }
+
+        .user-symptom::after {
+            content: '"';
+            font-size: 24px;
+            color: #A855F7;
+            position: absolute;
+            right: 12px;
+            bottom: 8px;
+            font-weight: bold;
+        }
+
+        .solution-box {
+            background: #f0fff4;
+            border: 2px solid #c6f6d5;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .solution-title {
+            font-weight: 700;
+            color: #22543d;
+            margin-bottom: 12px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .solution-text {
+            color: #2f855a;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .case-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .slack-btn {
+            background: linear-gradient(135deg, #A855F7, #C084FC);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+        }
+
+        .slack-btn:hover {
+            background: linear-gradient(135deg, #9333EA, #A855F7);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(168, 85, 247, 0.4);
+        }
+
+        .region-tag {
+            background: #e6fffa;
+            color: #234e52;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            display: none;
+        }
+
+        .not-found-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            border: 1px solid #E2E8F0;
+        }
+
+        .not-found-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 12px;
+        }
+
+        .report-btn {
+            background: linear-gradient(135deg, #A855F7, #C084FC);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 16px;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+        }
+
+        .report-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+            background: linear-gradient(135deg, #9333EA, #A855F7);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top: 3px solid #A855F7;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .cases-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            
+            .search-input {
+                font-size: 16px;
+                padding: 16px 20px;
+            }
+            
+            .case-card {
+                padding: 20px;
+            }
+            
+            .case-header {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .case-title {
+                margin-right: 0;
+            }
+
+            .quick-filters {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 8px;
+            }
+
+            .filter-chip {
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🛠️</div>
+                <div class="logo-text">
+                    <h1>Bitácora CS</h1>
+                    <p>Soluciones rápidas para Customer Success</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="search-section">
+            <h2 class="search-title">¿Qué problema reporta el usuario?</h2>
+            <p class="search-subtitle">Describe el síntoma o error que menciona el cliente</p>
+            <input type="text" class="search-input" id="searchInput" 
+                   placeholder="Ej: 'error inesperado', 'no aparece mi documento', 'no recibí recompensa'...">
+            
+            <div class="quick-filters">
+                <button class="filter-chip active" data-filter="all">Todos</button>
+                <button class="filter-chip" data-filter="registro">Registro</button>
+                <button class="filter-chip" data-filter="promociones">Promociones</button>
+                <button class="filter-chip" data-filter="transacciones">Transacciones</button>
+                <button class="filter-chip" data-filter="pay-out">Pay-out</button>
+                <button class="filter-chip" data-filter="wallet-dolares">Wallet Dólares</button>
+            </div>
+        </div>
+
+        <div class="loading" id="loadingIndicator">
+            <div class="loading-spinner"></div>
+            <p>Cargando casos desde Google Sheets...</p>
+        </div>
+
+        <div class="cases-grid" id="casesGrid" style="display: none;">
+        </div>
+
+        <div class="no-results" id="noResults">
+            <h3>No se encontraron casos similares</h3>
+            <p>Intenta con otros términos o revisa los filtros</p>
+        </div>
+
+        <div class="not-found-section">
+            <h3 class="not-found-title">¿No encuentras la solución?</h3>
+            <p>Si el problema del usuario no está en esta lista, créalo como caso nuevo</p>
+            <button class="report-btn" onclick="window.open('https://retorna.slack.com/archives/CS8UE5R36', '_blank')">
+                📋 Reportar Nuevo Caso en Slack
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURACIÓN - CAMBIAR ESTE ID POR EL DE TU GOOGLE SHEET
+        const GOOGLE_SHEET_ID = '1kIQB_euDjmFBDgElADLnxO0oP3DvbuQxTtuULxw8nKg';
+        const SHEET_NAME = 'Hoja 1'; // Nombre de la pestaña
+        
+        let allCases = [];
+        let filteredCases = [];
+
+        // Cargar casos desde Google Sheets
+        async function loadCasesFromGoogleSheets() {
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
+                
+                const response = await fetch(url);
+                const csvText = await response.text();
+                
+                allCases = parseCSV(csvText);
+                
+                console.log('Casos cargados:', allCases.length);
+                
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('casesGrid').style.display = 'grid';
+                
+                renderCases(allCases);
+                
+            } catch (error) {
+                console.error('Error cargando casos:', error);
+                document.getElementById('loadingIndicator').innerHTML = `
+                    <p style="color: #ff6b6b;">Error cargando casos. Verifica la configuración de Google Sheets.</p>
+                `;
+            }
+        }
+
+        // Parsear CSV
+        function parseCSV(csvText) {
+            const lines = csvText.split('\n');
+            const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+            const cases = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line) {
+                    const values = parseCSVLine(line);
+                    const caseObj = {};
+                    
+                    headers.forEach((header, index) => {
+                        caseObj[header.toLowerCase()] = values[index] || '';
+                    });
+                    
+                    if (caseObj.id && caseObj.titulo) {
+                        cases.push(caseObj);
+                    }
+                }
+            }
+
+            return cases;
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim().replace(/^"|"$/g, ''));
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            result.push(current.trim().replace(/^"|"$/g, ''));
+            return result;
+        }
+
+        // Renderizar casos
+        function renderCases(cases) {
+            const casesGrid = document.getElementById('casesGrid');
+            const noResults = document.getElementById('noResults');
+
+            if (cases.length === 0) {
+                casesGrid.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            casesGrid.style.display = 'grid';
+            noResults.style.display = 'none';
+
+            casesGrid.innerHTML = cases.map(caseData => {
+                const priorityClass = caseData.prioridad ? `priority-${caseData.prioridad.toLowerCase()}` : 'priority-medium';
+                
+                return `
+                    <div class="case-card" data-tags="${(caseData.keywords || '').toLowerCase()} ${(caseData.sintoma || '').toLowerCase()} ${(caseData.titulo || '').toLowerCase()}">
+                        <div class="case-header">
+                            <h3 class="case-title">${caseData.titulo || 'Sin título'}</h3>
+                            <span class="priority-badge ${priorityClass}">${caseData.prioridad || 'Medio'}</span>
+                        </div>
+                        <div class="case-stage">${caseData.etapa || 'General'}</div>
+                        
+                        <div class="user-symptom">
+                            ${caseData.sintoma || 'Sin síntoma registrado'}
+                        </div>
+
+                        <div class="solution-box">
+                            <div class="solution-title">
+                                💡 Solución Inmediata
+                            </div>
+                            <div class="solution-text">
+                                ${caseData.solucion || 'Sin solución registrada'}
+                            </div>
+                        </div>
+
+                        <div class="case-footer">
+                            <span class="region-tag">${caseData.region || 'General'}</span>
+                            ${caseData.slacklink ? 
+                                `<a href="${caseData.slacklink}" target="_blank" class="slack-btn">Ver ejemplo en Slack</a>` : 
+                                '<span class="slack-btn" style="opacity: 0.5; cursor: not-allowed;">Sin enlace</span>'
+                            }
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Búsqueda y filtros
+        function performSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const activeFilter = document.querySelector('.filter-chip.active').getAttribute('data-filter');
+            
+            let filtered = allCases;
+
+            // Filtrar por búsqueda
+            if (searchTerm) {
+                filtered = filtered.filter(caseData => {
+                    const searchFields = [
+                        caseData.titulo || '',
+                        caseData.sintoma || '',
+                        caseData.solucion || '',
+                        caseData.keywords || '',
+                        caseData.etapa || ''
+                    ].join(' ').toLowerCase();
+
+                    return searchFields.includes(searchTerm);
+                });
+            }
+
+            // Filtrar por categoría
+            if (activeFilter !== 'all') {
+                filtered = filtered.filter(caseData => {
+                    const stage = (caseData.etapa || '').toLowerCase();
+                    return stage.includes(activeFilter);
+                });
+            }
+
+            filteredCases = filtered;
+            renderCases(filteredCases);
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', performSearch);
+
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                performSearch();
+            });
+        });
+
+        // Cargar datos al iniciar
+        loadCasesFromGoogleSheets();
+
+        // Recargar cada 5 minutos
+        setInterval(loadCasesFromGoogleSheets, 300000);
+    </script>
+</body>
+</html>
+
+<!-- 
+
+INSTRUCCIONES DE IMPLEMENTACIÓN:
+
+1. CONFIGURAR GOOGLE SHEETS:
+   - Crea una hoja de cálculo nueva en Google Sheets
+   - Columnas necesarias: ID | Titulo | Sintoma | Solucion | Etapa | Prioridad | Region | SlackLink | Keywords
+   - Haz la hoja pública: Share > Change to anyone on the internet can view
+   - Copia el ID de la URL (la parte larga después de /d/ y antes de /edit)
+
+2. CONFIGURAR EL CÓDIGO:
+   - Cambia "TU_SHEET_ID_AQUI" por el ID de tu hoja
+   - Si tu pestaña no se llama "Casos", cambia SHEET_NAME
+
+3. HOSTING:
+   - GitHub Pages: Sube este archivo como index.html
+   - Netlify: Arrastra el archivo a netlify.com
+   - Vercel: Conecta con GitHub repository
+
+4. ESTRUCTURA DE DATOS EN GOOGLE SHEETS:
+   Fila 1 (headers): ID,Titulo,Sintoma,Solucion,Etapa,Prioridad,Region,SlackLink,Keywords
+   Fila 2: FALLA-001,Error carácter especial,Error inesperado en registro,Corregir apellido en Salesforce,Registro-OB,Alto,Colombia,https://slack.com/...,error registro documento
+
+5. ETAPAS VÁLIDAS:
+   - Registro-OB
+   - Pay-in  
+   - Transacciones
+   - Pay-out
+   - Promociones
+   - Wallet Dólares
+
+-->
