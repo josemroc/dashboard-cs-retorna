@@ -19,10 +19,8 @@
         }
 
         .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: transparent;
             padding: 20px 0;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
             margin-bottom: 30px;
         }
 
@@ -48,12 +46,12 @@
         .logo-text h1 {
             font-size: 24px;
             font-weight: 700;
-            color: #1a202c;
+            color: white;
         }
 
         .logo-text p {
             font-size: 14px;
-            color: #718096;
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .container {
@@ -255,8 +253,10 @@
             color: #A855F7;
             position: absolute;
             left: 12px;
-            top: 8px;
+            top: 50%;
+            transform: translateY(-50%);
             font-weight: bold;
+            line-height: 1;
         }
 
         .user-symptom::after {
@@ -265,8 +265,10 @@
             color: #A855F7;
             position: absolute;
             right: 12px;
-            bottom: 8px;
+            top: 50%;
+            transform: translateY(-50%);
             font-weight: bold;
+            line-height: 1;
         }
 
         .solution-box {
@@ -319,10 +321,48 @@
             box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
         }
 
-        .slack-btn:hover {
-            background: linear-gradient(135deg, #9333EA, #A855F7);
+        .share-btn {
+            background: linear-gradient(135deg, #10B981, #047857);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .share-btn:hover {
+            background: linear-gradient(135deg, #059669, #065f46);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(168, 85, 247, 0.4);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10B981, #047857);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4);
+            z-index: 1000001;
+            font-size: 14px;
+            font-weight: 600;
+            animation: slideInRight 0.4s ease-out;
+            max-width: 350px;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .region-tag {
@@ -343,19 +383,17 @@
         }
 
         .not-found-section {
-            background: white;
+            background: transparent;
             border-radius: 20px;
             padding: 30px;
             text-align: center;
             margin-top: 30px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-            border: 1px solid #E2E8F0;
         }
 
         .not-found-title {
             font-size: 20px;
             font-weight: 700;
-            color: #1a202c;
+            color: white;
             margin-bottom: 12px;
         }
 
@@ -488,7 +526,7 @@
 
         <div class="not-found-section">
             <h3 class="not-found-title">¿No encuentras la solución?</h3>
-            <p>Si el problema del usuario no está en esta lista, créalo como caso nuevo en el canal de Slack correspondiente</p>
+            <p style="color: rgba(255, 255, 255, 0.8);">Si el problema del usuario no está en esta lista, créalo como caso nuevo en el canal de Slack correspondiente</p>
         </div>
     </div>
 
@@ -504,7 +542,7 @@
         async function loadCasesFromGoogleSheets() {
             try {
                 // Reemplaza esta URL con la que obtengas de "Publish to web"
-                const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRQ1PtSF3INhOmW3tk41FQD7W1fivD_y6mfzXF4w8zssSO9pExhAv7SeAplg8rgMDVDrXakxd5Fn3ZA/pub?output=csv';
+                const url = 'AQUI_VA_TU_URL_DE_PUBLISH_TO_WEB';
                 
                 const response = await fetch(url);
                 
@@ -629,10 +667,9 @@
 
                         <div class="case-footer">
                             <span class="region-tag">${caseData.region || 'General'}</span>
-                            ${caseData.slacklink ? 
-                                `<a href="${caseData.slacklink}" target="_blank" class="slack-btn">Ver ejemplo en Slack</a>` : 
-                                '<span class="slack-btn" style="opacity: 0.5; cursor: not-allowed;">Sin enlace</span>'
-                            }
+                            <button class="share-btn" onclick="shareToSlack('${caseData.titulo}', '${caseData.sintoma}', '${caseData.solucion}')">
+                                📋 Compartir en Slack
+                            </button>
                         </div>
                     </div>
                 `;
@@ -684,11 +721,42 @@
             });
         });
 
+        // Función para compartir en Slack
+        function shareToSlack(titulo, sintoma, solucion) {
+            // Limpiar texto para evitar problemas con comillas
+            const cleanTitulo = titulo.replace(/'/g, '').replace(/"/g, '');
+            const cleanSintoma = sintoma.replace(/'/g, '').replace(/"/g, '');
+            const cleanSolucion = solucion.replace(/'/g, '').replace(/"/g, '');
+            
+            const slackMessage = `📋 *Solución CS - ${cleanTitulo}*
+🔍 *Problema:* "${cleanSintoma}"
+✅ *Solución:* ${cleanSolucion}
+
+_Solución obtenida de: Bitácora CS_`;
+
+            // Copiar al portapapeles
+            navigator.clipboard.writeText(slackMessage).then(function() {
+                showNotification('📋 Solución copiada al portapapeles. Listo para pegar en Slack!');
+            }, function(err) {
+                // Fallback si no funciona clipboard
+                console.error('Error al copiar:', err);
+                showNotification('❌ No se pudo copiar automáticamente. Copia el mensaje manualmente.');
+            });
+        }
+
+        function showNotification(message, duration = 3000) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, duration);
+        }
+
         // Cargar datos al iniciar
         loadCasesFromGoogleSheets();
-
-        // Recargar cada 5 minutos
-        setInterval(loadCasesFromGoogleSheets, 300000);
     </script>
 </body>
 </html>
@@ -725,4 +793,3 @@ INSTRUCCIONES DE IMPLEMENTACIÓN:
    - Wallet Dólares
 
 -->
-
