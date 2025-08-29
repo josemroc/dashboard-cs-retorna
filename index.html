@@ -13,7 +13,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, #4C1D95 0%, #5B21B6 50%, #7C3AED 100%);
+            background: linear-gradient(135deg, #1E1B4B 0%, #312E81 25%, #4C1D95 50%, #7C2D92 75%, #A855F7 100%);
             min-height: 100vh;
             color: #1F2937;
         }
@@ -239,20 +239,21 @@
         .user-symptom {
             background: #f0f4f8;
             border-left: 4px solid #A855F7;
-            padding: 16px;
+            padding: 16px 40px;
             border-radius: 8px;
             margin: 16px 0;
             font-style: italic;
             color: #2d3748;
             position: relative;
+            text-align: center;
         }
 
         .user-symptom::before {
             content: '"';
-            font-size: 24px;
+            font-size: 32px;
             color: #A855F7;
             position: absolute;
-            left: 12px;
+            left: 8px;
             top: 50%;
             transform: translateY(-50%);
             font-weight: bold;
@@ -261,10 +262,10 @@
 
         .user-symptom::after {
             content: '"';
-            font-size: 24px;
+            font-size: 32px;
             color: #A855F7;
             position: absolute;
-            right: 12px;
+            right: 8px;
             top: 50%;
             transform: translateY(-50%);
             font-weight: bold;
@@ -542,7 +543,7 @@
         async function loadCasesFromGoogleSheets() {
             try {
                 // Reemplaza esta URL con la que obtengas de "Publish to web"
-                const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRQ1PtSF3INhOmW3tk41FQD7W1fivD_y6mfzXF4w8zssSO9pExhAv7SeAplg8rgMDVDrXakxd5Fn3ZA/pub?output=csv';
+                const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRQ1P1SF3lNhOmW3tk41FQD7W1fivD_y6mfzXF4w8zssSO9pExh';
                 
                 const response = await fetch(url);
                 
@@ -668,7 +669,7 @@
                         <div class="case-footer">
                             <span class="region-tag">${caseData.region || 'General'}</span>
                             <button class="share-btn" onclick="shareToSlack('${caseData.titulo}', '${caseData.sintoma}', '${caseData.solucion}')">
-                                📋 Compartir en Slack
+                                📄 Copiar al portapapeles
                             </button>
                         </div>
                     </div>
@@ -793,4 +794,3 @@ INSTRUCCIONES DE IMPLEMENTACIÓN:
    - Wallet Dólares
 
 -->
-
